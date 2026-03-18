@@ -1,8 +1,8 @@
-import { Message, ChatRequest, ThreadInfo } from '../types';
+import { Message, ChatRequest, Thread } from '../types';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
-export async function getAllThreads(): Promise<string[]> {
+export async function getAllThreads(): Promise<Thread[]> {
   const response = await fetch(`${API_BASE_URL}/all/threads`, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },

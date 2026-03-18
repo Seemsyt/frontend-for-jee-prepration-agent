@@ -27,14 +27,15 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             components={{
-              code({ node, inline, className, children, ...props }) {
+              code(props) {
+                const { inline, className, children, ...rest } = props as any;
                 return inline ? (
-                  <code className="bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded text-sm font-mono" {...props}>
+                  <code className="bg-gray-200 dark:bg-gray-700 px-1 py-0.5 rounded text-sm font-mono" {...rest}>
                     {children}
                   </code>
                 ) : (
                   <pre className="bg-gray-900 text-gray-100 rounded-lg p-3 overflow-x-auto text-sm">
-                    <code className={className} {...props}>
+                    <code className={className} {...rest}>
                       {children}
                     </code>
                   </pre>
