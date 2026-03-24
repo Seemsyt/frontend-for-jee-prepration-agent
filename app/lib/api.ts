@@ -33,11 +33,12 @@ export async function getThreadMessages(threadId: string): Promise<Message[]> {
     content: msg.content,
   }));
 }
-
+// new streaming function
 export async function streamChat(
-  message: string, 
+  message: string,
   threadId?: string
 ): Promise<{ threadId: string; stream: AsyncGenerator<string, void, unknown> }> {
+
   const response = await fetch(`${API_BASE_URL}/chat-stream`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -48,31 +49,39 @@ export async function streamChat(
     throw new Error('Failed to send message');
   }
 
-  const receivedThreadId = response.headers.get('X-Thread-Id');
-  if (!receivedThreadId) {
-    throw new Error('No thread ID received from server');
-  }
+  const receivedThreadId = response.headers.get('X-Thread-Id') || 'new-thread';
 
   const reader = response.body?.getReader();
   const decoder = new TextDecoder();
-  
+
   if (!reader) {
     throw new Error('No reader available');
   }
 
   async function* streamGenerator() {
+    let buffer = '';
+
     try {
       while (true) {
         const { done, value } = await reader!.read();
         if (done) break;
-        
-        const chunk = decoder.decode(value);
-        yield chunk;
+
+        buffer += decoder.decode(value, { stream: true });
+
+        // Split SSE messages
+        const parts = buffer.split('\n\n');
+        buffer = parts.pop() || ''; // keep incomplete chunk
+
+        for (const part of parts) {
+          if (part.startsWith('data: ')) {
+            const data = part.replace('data: ', '');
+
+            if (data === '[DONE]') return;
+
+            yield data;
+          }
+        }
       }
-      
-      // Log thread ID after streaming completes
-      console.log('📌 Thread ID from backend:', receivedThreadId);
-      console.log('📌 Sent thread ID:', threadId || 'None (new thread)');
     } finally {
       reader!.releaseLock();
     }
