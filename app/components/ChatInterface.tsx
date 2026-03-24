@@ -103,10 +103,10 @@ export default function ChatInterface() {
   };
 
   return (
-    <div className="flex flex-col h-screen max-w-8xl mx-auto bg-white text-black md:mr-72">
+    <div className="flex flex-col h-screen bg-white text-black md:mr-72 w-full md:w-auto">
       
       {/* Header */}
-      <header className="border-b border-gray-200 p-4">
+      <header className="border-b border-gray-200 p-3 md:p-4">
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-2xl font-bold text-gray-800">
             Web agent
@@ -128,7 +128,7 @@ export default function ChatInterface() {
       </header>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-3 md:p-4 space-y-4 max-w-full">
         {isLoading ? (
           <div className="flex justify-center items-center h-full">
             <LoadingIndicator />
@@ -162,8 +162,8 @@ export default function ChatInterface() {
       </div>
 
       {/* Input */}
-      <div className="border-t border-gray-200 p-4">
-        <form onSubmit={handleSubmit} className="flex gap-2">
+      <div className="border-t border-gray-200 p-3 md:p-4">
+        <form onSubmit={handleSubmit} className="flex gap-2 flex-col sm:flex-row">
           <input
             ref={inputRef}
             type="text"
@@ -172,19 +172,19 @@ export default function ChatInterface() {
             onKeyDown={handleKeyDown}
             placeholder="Type your message..."
             disabled={isLoading || isStreaming}
-            className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:cursor-not-allowed text-black"
+            className="flex-1 px-3 md:px-4 py-2 md:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:cursor-not-allowed text-black text-sm md:text-base"
           />
 
           <button
             type="submit"
             disabled={!input.trim() || isLoading || isStreaming}
-            className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+            className="px-4 md:px-6 py-2 md:py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors text-sm md:text-base whitespace-nowrap"
           >
             {isStreaming ? 'Sending...' : 'Send'}
           </button>
         </form>
 
-        <div className="mt-2 text-xs text-gray-500 text-center">
+        <div className="mt-2 text-xs text-gray-500 text-center hidden md:block">
           Press Enter to send • Shift+Enter for new line
         </div>
       </div>
